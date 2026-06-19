@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: campus-nexus-springboot-api
+    env: java
+    plan: free
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -jar target/campus-nexus-api-2.0.0.jar
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JAVA_OPTS
+        value: "-Xmx512m -Dspring.profiles.active=production"
+    autoDeploy: false

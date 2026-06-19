@@ -109,7 +109,11 @@ export const authAPI = {
 // Club API functions
 export const clubAPI = {
     getClubs: async (params = {}) => {
-        const queryString = new URLSearchParams(params).toString();
+        // Filter out undefined values to prevent ?category=undefined
+        const cleanParams = Object.fromEntries(
+            Object.entries(params).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+        );
+        const queryString = new URLSearchParams(cleanParams).toString();
         return await api.get(`/api/clubs${queryString ? '?' + queryString : ''}`);
     },
 
@@ -133,7 +137,11 @@ export const clubAPI = {
 // Job API functions
 export const jobAPI = {
     getJobs: async (params = {}) => {
-        const queryString = new URLSearchParams(params).toString();
+        // Filter out undefined values to prevent ?type=undefined
+        const cleanParams = Object.fromEntries(
+            Object.entries(params).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+        );
+        const queryString = new URLSearchParams(cleanParams).toString();
         return await api.get(`/api/jobs${queryString ? '?' + queryString : ''}`);
     },
 
@@ -151,6 +159,78 @@ export const jobAPI = {
 
     deleteJob: async (id) => {
         return await api.delete(`/api/jobs/${id}`);
+    }
+};
+
+// Blog API functions
+export const blogAPI = {
+    getBlogs: async (params = {}) => {
+        // Filter out undefined values to prevent ?category=undefined
+        const cleanParams = Object.fromEntries(
+            Object.entries(params).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+        );
+        const queryString = new URLSearchParams(cleanParams).toString();
+        return await api.get(`/api/blogs${queryString ? '?' + queryString : ''}`);
+    },
+
+    getFeaturedBlogs: async () => {
+        return await api.get('/api/blogs/featured');
+    },
+
+    getBlogsByCategory: async (category, params = {}) => {
+        const cleanParams = Object.fromEntries(
+            Object.entries(params).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+        );
+        const queryString = new URLSearchParams(cleanParams).toString();
+        return await api.get(`/api/blogs/category/${category}${queryString ? '?' + queryString : ''}`);
+    },
+
+    getBlogsByAuthor: async (authorId, params = {}) => {
+        const cleanParams = Object.fromEntries(
+            Object.entries(params).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+        );
+        const queryString = new URLSearchParams(cleanParams).toString();
+        return await api.get(`/api/blogs/author/${authorId}${queryString ? '?' + queryString : ''}`);
+    },
+
+    getMyBlogs: async (params = {}) => {
+        const cleanParams = Object.fromEntries(
+            Object.entries(params).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+        );
+        const queryString = new URLSearchParams(cleanParams).toString();
+        return await api.get(`/api/blogs/my${queryString ? '?' + queryString : ''}`);
+    },
+
+    getBlog: async (id) => {
+        return await api.get(`/api/blog/${id}`);
+    },
+
+    createBlog: async (blogData) => {
+        return await api.post('/api/blog/new', blogData);
+    },
+
+    updateBlog: async (id, blogData) => {
+        return await api.put(`/api/blog/${id}`, blogData);
+    },
+
+    deleteBlog: async (id) => {
+        return await api.delete(`/api/blog/${id}`);
+    },
+
+    likeBlog: async (id) => {
+        return await api.post(`/api/blog/${id}/like`);
+    },
+
+    getBlogStats: async () => {
+        return await api.get('/api/blogs/stats');
+    },
+
+    getAllBlogsAdmin: async (params = {}) => {
+        const cleanParams = Object.fromEntries(
+            Object.entries(params).filter(([_, value]) => value !== undefined && value !== null && value !== '')
+        );
+        const queryString = new URLSearchParams(cleanParams).toString();
+        return await api.get(`/api/admin/blogs${queryString ? '?' + queryString : ''}`);
     }
 };
 

@@ -9,6 +9,7 @@ import { errorHandler, notFound } from './middleware/error.js';
 import userRoute from './routes/userRoute.js';
 import clubRoute from './routes/ClubRoute.js';
 import jobRoute from './routes/jobRoute.js';
+import blogRoute from './routes/blogRoute.js';
 
 // Load environment variables
 config({
@@ -66,6 +67,7 @@ app.use((req, res, next) => {
 app.use('/api/user', userRoute);
 app.use('/api/clubs', clubRoute);
 app.use('/api/jobs', jobRoute);
+app.use('/api', blogRoute);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -87,6 +89,7 @@ app.get('/api', (req, res) => {
             auth: '/api/user - User authentication endpoints',
             clubs: '/api/clubs - Club management endpoints',
             jobs: '/api/jobs - Job management endpoints',
+            blogs: '/api/blogs - Blog management endpoints',
             health: '/api/health - Health check endpoint'
         },
         authRequired: 'Include Authorization: Bearer <token> header for protected routes'

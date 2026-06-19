@@ -29,20 +29,33 @@ const Clubcard = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await clubAPI.getClubs({
-          page: currentPage,
-          limit: pageSize,
-          category: tab.name !== 'all' ? tab.name : undefined
-        });
 
-        if (response.success) {
-          setCdata(response.data || []);
+        // Build clean params object
+        const params = {
+          page: currentPage,
+          limit: pageSize
+        };
+
+        // Only add category if it's not 'all'
+        if (tab.name !== 'all') {
+          params.category = tab.name;
+        }
+
+        console.log('🏢 Fetching clubs with params:', params);
+        const response = await clubAPI.getClubs(params);
+        console.log('🏢 Clubs API response:', response);
+
+        if (response && response.success) {
+          const clubs = response.data || [];
+          console.log('🏢 Setting clubs data:', clubs.length, 'clubs');
+          setCdata(clubs);
         } else {
+          console.log('🏢 No clubs data in response');
           setCdata([]);
         }
       } catch (error) {
-        console.error('Error fetching clubs:', error);
-        message.error('Failed to fetch clubs');
+        console.error('🏢 Error fetching clubs:', error);
+        message.error('Failed to load club details');
         setCdata([]);
       } finally {
         setLoading(false);

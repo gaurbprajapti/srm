@@ -12,26 +12,41 @@ function Login() {
     const onfinish = async (values) => {
         setLoading(true);
         try {
+            console.log('🔐 Attempting login with:', values);
             const response = await authAPI.login({
-                email: values.email,
+                username: values.email, // Backend expects 'username' field
                 password: values.password
             });
 
+            console.log('🔐 Login response:', response);
             setLoading(false);
-            message.success(response.message || "Login successful");
-            navigate('/home');
+
+            if (response.success) {
+                message.success(response.message || "Login successful");
+                // Small delay to ensure localStorage is updated
+                setTimeout(() => {
+                    navigate('/home');
+                }, 100);
+            } else {
+                message.error(response.message || "Login failed");
+            }
         } catch (error) {
             console.error('Login error:', error);
             setLoading(false);
-            const errorMessage = error.response?.data?.error || error.message || "Login failed";
+            const errorMessage = error.response?.data?.message || error.message || "Login failed";
             message.error(errorMessage);
         }
     };
 
     // Redirect to home if already authenticated
     useEffect(() => {
-        if (apiUtils.isAuthenticated()) {
-            navigate('/home');
+        const isAuth = apiUtils.isAuthenticated();
+        const user = apiUtils.getCurrentUser();
+        console.log('🔐 Login page - checking auth:', { isAuth, user });
+        
+        if (isAuth && user && (user._id || user.id)) {
+            console.log('🔐 User already authenticated, redirecting to home');
+            navigate('/home', { replace: true });
         }
     }, [navigate]);
 

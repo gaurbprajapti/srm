@@ -1,0 +1,83 @@
+server:
+  port: ${PORT:5050}
+
+spring:
+  application:
+    name: campus-nexus-api
+
+    datasource:
+    url: jdbc:mysql://localhost:3306/campus_nexus?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+    jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+  h2:
+    console:
+      enabled: false
+      path: /h2-console
+
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:10MB}
+      max-request-size: ${MAX_REQUEST_SIZE:10MB}
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:your-super-secret-jwt-key-at-least-32-characters-long}
+  expiration: ${JWT_EXPIRES_IN:604800000} # 7 days in milliseconds
+  refresh-secret: ${JWT_REFRESH_SECRET:your-refresh-secret-key-different-from-jwt-secret}
+  refresh-expiration: ${JWT_REFRESH_EXPIRES_IN:2592000000} # 30 days in milliseconds
+
+# CORS Configuration
+cors:
+  # Frontend URLs (Development + Production)
+  allowed-origins: ${FRONTEND_URL:http://localhost:3000},http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,https://campusnexus.netlify.app,https://*.netlify.app,https://localhost:3000
+  # HTTP Methods
+  allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS,HEAD
+  # Request Headers
+  allowed-headers: Content-Type,Authorization,x-csrf-token,X-Requested-With,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers
+  # Response Headers exposed to frontend
+  exposed-headers: Content-Range,X-Content-Range,Authorization,Content-Length,X-Total-Count
+  # Allow credentials (cookies, authorization headers)
+  allow-credentials: true
+  # Preflight cache duration (in seconds)
+  max-age: 3600
+
+# File Upload Configuration
+file:
+  upload:
+    dir: ${UPLOAD_DIR:./uploads}
+    allowed-types: ${ALLOWED_FILE_TYPES:jpg,jpeg,png,gif}
+    max-size: ${MAX_FILE_SIZE:5242880}
+
+# Rate Limiting Configuration
+rate-limit:
+  login:
+    window-ms: ${RATE_LIMIT_WINDOW_MS:900000}
+    max-requests: ${RATE_LIMIT_MAX_REQUESTS:5}
+
+# Logging
+logging:
+  level:
+    com.srm.campusnexus: ${LOG_LEVEL:DEBUG}
+    org.springframework.security: ${SECURITY_LOG_LEVEL:DEBUG}
+    org.hibernate.SQL: ${SQL_LOG_LEVEL:DEBUG}
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

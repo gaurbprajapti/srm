@@ -13,6 +13,9 @@ import Templateshome from './pages/Templateshome';
 import { JobHome } from './components/Jobs/JobHome';
 import OnCampusJobs from './components/Jobs/OnCampusJobs';
 import ErrorPage from './components/ErrorPage/ErrorPage';
+import ApiTest from './components/ApiTest';
+import ApiConfig from './components/ApiConfig';
+import ApiDebugger from './components/ApiDebugger';
 import { apiUtils } from './utils/api';
 
 function App() {
@@ -20,6 +23,7 @@ function App() {
   return (
     <section className='Appp'>
       <BrowserRouter>
+        <ApiConfig />
         <Routes>
           <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
@@ -33,6 +37,8 @@ function App() {
           <Route path="/Club/:id" element={<Clubs />} />
           <Route path="/jobs" element={<JobHome />} />
           <Route path="/oncampusjobs" element={<OnCampusJobs />} />
+          <Route path="/api-test" element={<ApiTest />} />
+          <Route path="/debug" element={<ApiDebugger />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>
@@ -53,7 +59,8 @@ export function ProtectedRoute(props) {
   console.log('🔒 Is authenticated:', isAuthenticated);
   console.log('🔒 Current user:', user);
 
-  if (isAuthenticated && user && user._id) {
+  // Check for both _id (MongoDB) and id (Spring Boot) for compatibility
+  if (isAuthenticated && user && (user._id || user.id)) {
     console.log('✅ Access granted to protected route');
     return props.children;
   }
